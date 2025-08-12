@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Environment Data</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid black; padding: 5px; text-align: center; }
+        th { background-color: #f2f2f2; }
+    </style>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <h1>Environment Data</h1>
+    <table id="data-table">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Temp (°C)</th>
+            <th>Humidity (%)</th>
+            <th>Wind (m/s)</th>
+            <th>Pressure (hPa)</th>
+        </tr>
+    </table>
+
+    <script>
+        // Firebase config (thay thông tin này bằng của bạn)
+        // 1. Config Firebase
+        var firebaseConfig = {
+            apiKey: "AIzaSyD4V8iN3fVA-5QF9wnrlGqafYBVJLTUn2A",
+            authDomain: "iot-cloud-service-9bc1f.firebaseapp.com",
+            databaseURL: "https://iot-cloud-service-9bc1f-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "iot-cloud-service-9bc1f",
+            storageBucket: "iot-cloud-service-9bc1f.firebasestorage.app",
+            messagingSenderId: "229037037673",
+            appId: "1:229037037673:web:581770657547a54a2baaf8"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+
+        // Lấy dữ liệu realtime
+        var ref = database.ref("environment_data");
+        ref.on("value", function(snapshot) {
+            var table = document.getElementById("data-table");
+            table.innerHTML = `
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Time</th>
+                    <th>Temp (°C)</th>
+                    <th>Humidity (%)</th>
+                    <th>Wind (m/s)</th>
+                    <th>Pressure (hPa)</th>
+                </tr>
+            `;
+            snapshot.forEach(function(childSnapshot) {
+                var data = childSnapshot.val();
+                var row = `
+                    <tr>
+                        <td>${data.ID}</td>
+                        <td>${data.Name}</td>
+                        <td>${data.Time}</td>
+                        <td>${data.Temperature}</td>
+                        <td>${data.Humidity}</td>
+                        <td>${data.Wind}</td>
+                        <td>${data.Pressure}</td>
+                    </tr>
+                `;
+                table.innerHTML += row;
+            });
+        });
+    </script>
+</body>
+</html>
