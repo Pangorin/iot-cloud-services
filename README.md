@@ -21,6 +21,9 @@ This project demonstrates a simple IoT setup where environmental data is sent to
 3. Run the Python script to send data.
 4. Open `index.html` in a browser to view live updates.
 
+## Results
+![Page]()
+
 ## Notes
 - Make sure your Firebase rules allow read/write for testing.
 - Use authentication and secure rules for production.
