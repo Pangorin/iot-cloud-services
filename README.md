@@ -22,10 +22,11 @@ This project demonstrates a simple IoT setup where environmental data is sent to
 4. Open `index.html` in a browser to view live updates.
 
 ## Results
-![Page](https://github.com/Pangorin/iot-cloud-services/blob/main/images/3.png)
+![Homepage](https://github.com/Pangorin/iot-cloud-services/blob/main/images/Homepage.png)
+![Edit](https://github.com/Pangorin/iot-cloud-services/blob/main/images/Edit.png)
+![Delete](https://github.com/Pangorin/iot-cloud-services/blob/main/images/Delete.png)
 
 ## Notes
-- Make sure your Firebase rules allow read/write for testing.
 - Use authentication and secure rules for production.
 
 ## License
