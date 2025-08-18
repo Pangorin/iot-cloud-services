@@ -1,77 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Environment Data</title>
-    <style>
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid black; padding: 5px; text-align: center; }
-        th { background-color: #f2f2f2; }
-    </style>
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <meta charset="UTF-8">
+  <title>Environment Data</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
-<body>
-    <h1>Environment Data</h1>
-    <table id="data-table">
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Time</th>
-            <th>Temp (°C)</th>
-            <th>Humidity (%)</th>
-            <th>Wind (m/s)</th>
-            <th>Pressure (hPa)</th>
-        </tr>
-    </table>
+<body class="bg-light">
+  <div class="container py-4">
+    <h1 class="text-center mb-4">🌍 Environment Data</h1>
 
-    <script>
-        // Firebase config (thay thông tin này bằng của bạn)
-        // 1. Config Firebase
-        var firebaseConfig = {
-            apiKey: "AIzaSyD4V8iN3fVA-5QF9wnrlGqafYBVJLTUn2A",
-            authDomain: "iot-cloud-service-9bc1f.firebaseapp.com",
-            databaseURL: "https://iot-cloud-service-9bc1f-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "iot-cloud-service-9bc1f",
-            storageBucket: "iot-cloud-service-9bc1f.firebasestorage.app",
-            messagingSenderId: "229037037673",
-            appId: "1:229037037673:web:581770657547a54a2baaf8"
-        };
-        firebase.initializeApp(firebaseConfig);
-        var database = firebase.database();
+    <!-- Form nhập dữ liệu -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-primary text-white">Add / Update Data</div>
+      <div class="card-body">
+        <form id="data-form" class="row g-3">
+          <input type="hidden" id="recordKey"> <!-- để lưu key khi edit -->
 
-        // Lấy dữ liệu realtime
-        var ref = database.ref("environment_data");
-        ref.on("value", function(snapshot) {
-            var table = document.getElementById("data-table");
-            table.innerHTML = `
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Time</th>
-                    <th>Temp (°C)</th>
-                    <th>Humidity (%)</th>
-                    <th>Wind (m/s)</th>
-                    <th>Pressure (hPa)</th>
-                </tr>
-            `;
-            snapshot.forEach(function(childSnapshot) {
-                var data = childSnapshot.val();
-                var row = `
-                    <tr>
-                        <td>${data.ID}</td>
-                        <td>${data.Name}</td>
-                        <td>${data.Time}</td>
-                        <td>${data.Temperature}</td>
-                        <td>${data.Humidity}</td>
-                        <td>${data.Wind}</td>
-                        <td>${data.Pressure}</td>
-                    </tr>
-                `;
-                table.innerHTML += row;
-            });
-        });
-    </script>
+          <div class="col-md-2">
+            <input type="text" id="ID" class="form-control" placeholder="ID" required>
+          </div>
+          <div class="col-md-2">
+            <input type="text" id="Name" class="form-control" placeholder="Name" required>
+          </div>
+          <div class="col-md-2">
+            <input type="number" id="Temperature" class="form-control" placeholder="Temp °C" required>
+          </div>
+          <div class="col-md-2">
+            <input type="number" id="Humidity" class="form-control" placeholder="Humidity %" required>
+          </div>
+          <div class="col-md-2">
+            <input type="number" id="Wind" class="form-control" placeholder="Wind m/s" required>
+          </div>
+          <div class="col-md-2">
+            <input type="number" id="Pressure" class="form-control" placeholder="Pressure hPa" required>
+          </div>
+          <div class="col-12 text-end">
+            <button type="submit" class="btn btn-success">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bảng dữ liệu -->
+    <div class="card shadow-sm">
+      <div class="card-header bg-secondary text-white">Realtime Data</div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped text-center align-middle" id="data-table">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Time</th>
+              <th>Temp (°C)</th>
+              <th>Humidity (%)</th>
+              <th>Wind (m/s)</th>
+              <th>Pressure (hPa)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase config
+    var firebaseConfig = {
+      apiKey: "AIzaSyD5IiE-fa9HGRmLhcQeGKMaeCVWMep4YtE",
+      authDomain: "iot-cloud-services.firebaseapp.com",
+      databaseURL: "https://iot-cloud-services-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-cloud-services",
+      storageBucket: "iot-cloud-services.firebasestorage.app",
+      messagingSenderId: "135514773503",
+      appId: "1:135514773503:web:73b8d95c2dcdaba60cf9ca"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+    var ref = database.ref("environment_data");
+
+    // Load data realtime
+    ref.on("value", function(snapshot) {
+      var tbody = document.querySelector("#data-table tbody");
+      tbody.innerHTML = "";
+      snapshot.forEach(function(childSnapshot) {
+        var key = childSnapshot.key;
+        var data = childSnapshot.val();
+        var row = `
+          <tr>
+            <td>${data.ID}</td>
+            <td>${data.Name}</td>
+            <td>${data.Time || ""}</td>
+            <td>${data.Temperature}</td>
+            <td>${data.Humidity}</td>
+            <td>${data.Wind}</td>
+            <td>${data.Pressure}</td>
+            <td>
+              <button class="btn btn-sm btn-warning" onclick="editData('${key}', ${JSON.stringify(data).replace(/"/g, '&quot;')})">Edit</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteData('${key}')">Delete</button>
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    });
+
+    // Add or update data
+    document.getElementById("data-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      var recordKey = document.getElementById("recordKey").value;
+      var data = {
+        ID: document.getElementById("ID").value,
+        Name: document.getElementById("Name").value,
+        Time: new Date().toLocaleString(),
+        Temperature: document.getElementById("Temperature").value,
+        Humidity: document.getElementById("Humidity").value,
+        Wind: document.getElementById("Wind").value,
+        Pressure: document.getElementById("Pressure").value
+      };
+      if (recordKey) {
+        ref.child(recordKey).set(data);
+      } else {
+        ref.push(data);
+      }
+      document.getElementById("data-form").reset();
+      document.getElementById("recordKey").value = "";
+    });
+
+    // Edit
+    function editData(key, data) {
+      document.getElementById("recordKey").value = key;
+      document.getElementById("ID").value = data.ID;
+      document.getElementById("Name").value = data.Name;
+      document.getElementById("Temperature").value = data.Temperature;
+      document.getElementById("Humidity").value = data.Humidity;
+      document.getElementById("Wind").value = data.Wind;
+      document.getElementById("Pressure").value = data.Pressure;
+    }
+
+    // Delete
+    function deleteData(key) {
+      if (confirm("Are you sure to delete this record?")) {
+        ref.child(key).remove();
+      }
+    }
+  </script>
 </body>
 </html>

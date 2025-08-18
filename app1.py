@@ -3,9 +3,10 @@ from firebase_admin import credentials, db
 from datetime import datetime
 
 # 1. Kết nối Firebase
-cred = credentials.Certificate("iot-cloud-service-9bc1f-firebase-adminsdk-fbsvc-db3f71888b.json")  # File key tải từ Firebase
+cred = credentials.Certificate("/Users/pangorin/Documents/GitHub/iot-cloud-services/iot-cloud-services-firebase-adminsdk-fbsvc-81e3555c5f.json")
+
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://iot-cloud-service-9bc1f-default-rtdb.asia-southeast1.firebasedatabase.app/'
+    'databaseURL': 'https://iot-cloud-services-default-rtdb.asia-southeast1.firebasedatabase.app/'
 })
 
 # 2. Dữ liệu mẫu
